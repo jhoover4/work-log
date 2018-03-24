@@ -1,11 +1,11 @@
 from datetime import datetime
 
 
-class Entry():
+class Entry:
     """This will help on the transfer to the database later on..."""
 
     def __init__(self, date, title, time_spent, notes=''):
-        self.fields = ['Date','Title','Time Spent', 'Notes']
+        self.fields = ['Date', 'Title', 'Time Spent', 'Notes']
 
         self.date = date
         self.title = title

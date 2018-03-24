@@ -2,7 +2,7 @@
 
 This is the third project in Treehouse Python tech degree.
 
-To use run work_log.py
+To use run work_log.py.
 
 ## Description
 
