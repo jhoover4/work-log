@@ -86,7 +86,7 @@ class Database:
                 writer.writerows(entry_list)
 
     def del_entry(self, title):
-        """Takes one entry. Can take more if needed"""
+        """Takes one entry and deletes from csv."""
 
         for entry in self.entries:
             if entry.title == title:
@@ -94,12 +94,12 @@ class Database:
 
         self.rewrite_database()
 
-    def edit_entry(self, title):
-        """Takes one entry. Can take more if needed"""
+    def edit_entry(self, entry):
+        """Takes one entry and rewrites it in csv."""
 
-        for entry in self.entries:
-            if entry.title == title:
-                del entry
+        self.del_entry(entry.title)
+
+        self.add_entries([entry])
 
 
 class Search(Database):
