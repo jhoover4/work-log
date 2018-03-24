@@ -16,10 +16,9 @@ Print a report of this information to the screen, including the date, title of t
 
 ## Extra Credit
 
-Implement a one-time pad to secure the cipher.
-
-A one-time pad is an additional input step 
-required prior to enc or decrypt a message. As long
-as both the sender and receiver use the same pad,
-the message itself becomes secure. Without the pad,
-the message cannot be recovered.
+- Entries can be deleted and edited, 
+letting user change the date, task name, time spent, 
+and/or notes.
+- Entries can be searched for and found based on a date range.
+- Entries are displayed one at a time 
+with the ability to page through records (previous/next/back).
