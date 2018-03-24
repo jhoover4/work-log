@@ -21,26 +21,20 @@ class Database:
             open(self.database_name, 'a').close()
 
     def rewrite_database(self):
-        """Creates completely new database"""
+        """Creates completely new database."""
 
         with open(self.database_name, 'w') as f:
 
-            fieldnames = self.entries[0].fields
+            fieldnames = self.entries[0].keys()
 
             writer = csv.DictWriter(f, fieldnames=fieldnames)
-
             writer.writeheader()
 
             if len(self.entries) == 0:
                 # if we only have one entry a different method needs to be used
-                writer.writerow(self.entries[0].to_dict())
+                writer.writerow(self.entries[0])
             else:
-                entry_list = []
-
-                for entry in self.entries:
-                    entry_list.append(entry.to_dict())
-
-                writer.writerows(entry_list)
+                writer.writerows(self.entries)
 
     def read_database(self):
         """Opens up data to be worked with."""
@@ -88,17 +82,15 @@ class Database:
     def del_entry(self, title):
         """Takes one entry and deletes from csv."""
 
-        for entry in self.entries:
-            if entry.title == title:
-                del entry
+        new_entries = [entry for entry in self.entries if entry['Title'] != title]
+        self.entries = new_entries
 
         self.rewrite_database()
 
-    def edit_entry(self, entry):
+    def edit_entry(self, entry, old_title):
         """Takes one entry and rewrites it in csv."""
 
-        self.del_entry(entry.title)
-
+        self.del_entry(old_title)
         self.add_entries([entry])
 
 

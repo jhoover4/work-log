@@ -157,39 +157,38 @@ class InterfaceHelpers:
 
         user_input = ''
         i = 0
+        query_len = len(entries)
 
-        while user_input.lower() != 'q' and i <= len(entries) - 1:
+        while user_input.lower() != 'q' and i <= query_len - 1:
             self.clear()
-            valid_input = ['q', 'e']
+            valid_input = ['q', 'e', 'd']
 
-            if len(entries) == 1:
-                prompt = "One entry returned. Press (q) to return to menu or (e) to edit.\n\n"
-                prompt += entries[i].display_entry() + "\n"
-                prompt += "Press any key to return to menu."
-                input(prompt)
+            if query_len == 1:
+                prompt = "One task returned. Press (q) to return to menu, (d) to delete, or (e) to edit.\n\n"
+            else:
+                prompt = "Page through returned tasks. Press (q) to return to menu, (d) to delete, or (e) to edit.\n\n"
 
-                return
-
-            prompt = "Page through returned entries. Press (q) to return to menu or (e) to edit.\n\n"
             prompt += entries[i].display_entry() + "\n"
 
-            if i != 0:
+            if i != 0 and query_len != 1:
                 prompt += "(p)revious\n"
                 valid_input.append('p')
-            if i != len(entries) - 1:
+            if i != query_len - 1 and query_len != 1:
                 prompt += "(n)ext\n"
                 valid_input.append('n')
 
-            user_input = input(prompt)
+            user_input = input(prompt + ">")
 
             while user_input.lower() not in valid_input:
                 self.clear()
-
-                print("Please enter valid input\n")
-                user_input = input(prompt)
+                user_input = input(prompt + "Please enter valid input\n>")
 
             if user_input.lower() == 'p':
                 i -= 1
+            elif user_input.lower() == 'd':
+                self.database.del_entry(entries[i])
+            elif user_input.lower() == 'e':
+                self.edit_task(entries[i])
             else:
                 i += 1
 
@@ -209,7 +208,7 @@ class InterfaceHelpers:
             prompt += "b) Title: " + entry.title + "\n"
             prompt += "c) Time Spent: " + str(entry.time_spent) + "\n"
             prompt += "d) Notes: " + entry.notes + "\n"
-            prompt += ">"
+            prompt += "\n>"
 
             user_input = input(prompt)
 
@@ -218,8 +217,9 @@ class InterfaceHelpers:
 
                 user_input = input(prompt + "Please enter valid input\n")
 
+            old_title = entry.title
             if user_input == "a":
-                entry.task_date = self.input_date("Update Task Date:\n>")
+                entry.date = self.input_date("Update Task Date:\n>")
             if user_input == "b":
                 entry.title = self.input_text("Update Title:\n>")
             if user_input == "c":
@@ -227,7 +227,7 @@ class InterfaceHelpers:
             if user_input == "d":
                 entry.notes = self.input_text("Update Notes:\n>")
 
-            self.database.edit_entry(entry)
+            self.database.edit_entry(entry, old_title)
 
     def date_search(self, entries):
         user_input = input("Please enter a date:\n> ")
