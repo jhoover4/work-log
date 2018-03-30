@@ -63,7 +63,7 @@ class Database:
         return entries
 
     def check_title(self, sel_entry):
-        """Title is unique key and cannot be duplicated in entries."""
+        """Title is a unique key and cannot be duplicated in entries."""
 
         entry_titles = [entry["Title"] for entry in self.entries]
 

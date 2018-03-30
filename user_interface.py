@@ -5,8 +5,6 @@ from entry import Entry
 from database import Search
 
 
-#TODO: Formatting touch ups and PEP 8 checks
-
 class InterfaceHelpers:
 
     def __init__(self, database):
