@@ -11,6 +11,7 @@ class Database:
     def __init__(self, database_name='work_entries'):
         self.database_name = database_name + '.csv'
         self.database_file_path = os.path.dirname(os.path.realpath(__file__)) + self.database_name
+        self.fieldnames = ['Date', 'Title', 'Time Spent', 'Notes']
 
         try:
             self.entries = self.read_database()
@@ -28,14 +29,16 @@ class Database:
 
         with open(self.database_name, 'w') as f:
 
-            fieldnames = self.entries[0].keys()
-
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer = csv.DictWriter(f, fieldnames=self.fieldnames)
             writer.writeheader()
 
             if len(self.entries) == 0:
                 # if we only have one entry a different method needs to be used
-                writer.writerow(self.entries[0])
+
+                if self.entries:
+                    # check if there are any entries to write
+
+                    writer.writerow(self.entries[0])
             else:
                 writer.writerows(self.entries)
 
@@ -70,14 +73,12 @@ class Database:
 
         return True
 
-    def add_entries(self, entries):
+    def add_entries(self, entries, new=False):
         """Takes a list of Entry objects"""
 
         with open(self.database_name, 'a') as f:
 
-            fieldnames = entries[0].fields
-
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer = csv.DictWriter(f, fieldnames=self.fieldnames)
 
             if os.stat(self.database_name).st_size == 0:
                 writer.writeheader()
@@ -85,22 +86,25 @@ class Database:
             if len(entries) == 0:
                 # if we only have one entry a different method needs to be used
                 entry = entries
-                try:
-                    self.check_title(entry)
-                except IndexError:
-                    raise IndexError
-                else:
-                    writer.writerow(entry.to_dict())
-            else:
-                entry_list = []
 
-                for entry in entries:
+                if new:
                     try:
                         self.check_title(entry)
                     except IndexError:
                         raise IndexError
-                    else:
-                        entry_list.append(entry.to_dict())
+
+                writer.writerow(entry.to_dict())
+            else:
+                entry_list = []
+
+                for entry in entries:
+                    if new:
+                        try:
+                            self.check_title(entry)
+                        except IndexError:
+                            raise IndexError
+
+                    entry_list.append(entry.to_dict())
 
                 writer.writerows(entry_list)
 
@@ -112,10 +116,10 @@ class Database:
 
         self.rewrite_database()
 
-    def edit_entry(self, entry, old_title):
+    def edit_entry(self, entry, old_entry):
         """Takes one entry and rewrites it in csv."""
 
-        self.del_entry(old_title)
+        self.del_entry(old_entry)
         self.add_entries([entry])
 
 

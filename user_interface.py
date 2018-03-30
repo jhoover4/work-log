@@ -71,7 +71,7 @@ class InterfaceHelpers:
 
         new_entry = Entry(task_date, task_title, time_spent, notes)
         try:
-            self.database.add_entries([new_entry])
+            self.database.add_entries([new_entry], new=True)
             self.clear()
             input("The task has been added! Press any key to return to the menu.\n")
         except IndexError:
@@ -196,11 +196,11 @@ class InterfaceHelpers:
                 print("Entry deleted!")
                 break
             elif user_input.lower() == 'e':
-                self.edit_task(entries[i])
+                self.edit_entry_ui(entries[i])
             else:
                 i += 1
 
-    def edit_task(self, entry):
+    def edit_entry_ui(self, entry):
         """UI for user to edit a task."""
 
         user_input = ''
@@ -225,7 +225,7 @@ class InterfaceHelpers:
 
                 user_input = input(prompt + "Please enter valid input\n")
 
-            old_title = entry.title
+            old_entry = entry
             if user_input == "a":
                 entry.date = self.input_date("Update Task Date:\n>")
             if user_input == "b":
@@ -235,7 +235,7 @@ class InterfaceHelpers:
             if user_input == "d":
                 entry.notes = self.input_text("Update Notes:\n>")
 
-            self.database.edit_entry(entry, old_title)
+            self.database.edit_entry(entry, old_entry)
 
     def date_search(self, entries):
         user_input = input("Please enter a date:\n> ")
