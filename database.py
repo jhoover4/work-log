@@ -59,6 +59,17 @@ class Database:
 
         return entries
 
+    def check_title(self, sel_entry):
+        """Title is unique key and cannot be duplicated in entries."""
+
+        entry_titles = [entry["Title"] for entry in self.entries]
+
+        if sel_entry.title in entry_titles:
+            raise IndexError("There is already a entry in the database with that title."
+                             "Entry names must be unique.")
+
+        return True
+
     def add_entries(self, entries):
         """Takes a list of Entry objects"""
 
@@ -73,19 +84,30 @@ class Database:
 
             if len(entries) == 0:
                 # if we only have one entry a different method needs to be used
-                writer.writerow(entries.to_dict())
+                entry = entries
+                try:
+                    self.check_title(entry)
+                except IndexError:
+                    raise IndexError
+                else:
+                    writer.writerow(entry.to_dict())
             else:
                 entry_list = []
 
                 for entry in entries:
-                    entry_list.append(entry.to_dict())
+                    try:
+                        self.check_title(entry)
+                    except IndexError:
+                        raise IndexError
+                    else:
+                        entry_list.append(entry.to_dict())
 
                 writer.writerows(entry_list)
 
-    def del_entry(self, title):
+    def del_entry(self, sel_entry):
         """Takes one entry and deletes from csv."""
 
-        new_entries = [entry for entry in self.entries if entry['Title'] != title]
+        new_entries = [entry for entry in self.entries if entry['Title'] != sel_entry.title]
         self.entries = new_entries
 
         self.rewrite_database()

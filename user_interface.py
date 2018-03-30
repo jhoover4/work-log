@@ -70,10 +70,14 @@ class InterfaceHelpers:
         notes = self.input_text("Notes (Optional, you can leave this empty): \n")
 
         new_entry = Entry(task_date, task_title, time_spent, notes)
-        self.database.add_entries([new_entry])
-
-        self.clear()
-        input("The task has been added! Press any key to return to the menu\n")
+        try:
+            self.database.add_entries([new_entry])
+            self.clear()
+            input("The task has been added! Press any key to return to the menu.\n")
+        except IndexError:
+            self.clear()
+            input("ERROR: An entry with that title already exists in the database. Please use a unique title. "
+                  "Press any key to return to the menu.\n")
 
     def search_task(self):
         """For searching tasks from the csv file.
@@ -102,7 +106,7 @@ class InterfaceHelpers:
 
             search_csv = Search()
 
-            if user_input.lower() == "e":
+            if user_input.lower() == "e" or user_input.lower() == "q":
                 break
 
             self.clear()
@@ -189,6 +193,8 @@ class InterfaceHelpers:
                 i -= 1
             elif user_input.lower() == 'd':
                 self.database.del_entry(entries[i])
+                print("Entry deleted!")
+                break
             elif user_input.lower() == 'e':
                 self.edit_task(entries[i])
             else:
