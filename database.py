@@ -12,7 +12,10 @@ class Database:
         self.database_name = database_name + '.csv'
         self.database_file_path = os.path.dirname(os.path.realpath(__file__)) + self.database_name
 
-        self.entries = self.read_database()
+        try:
+            self.entries = self.read_database()
+        except FileNotFoundError:
+            self.create_database()
 
     def create_database(self):
         """Creates csv if it doesn't already exist."""
